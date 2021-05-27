@@ -63,6 +63,7 @@ export class ClientesComponent implements OnInit {
   }
 
   buscarCliente({ value, valid }: { value: string; valid: boolean | null }) {
+    console.log('paso');
     let txtBuscar: any = value;
     if (!valid) {
       return;
