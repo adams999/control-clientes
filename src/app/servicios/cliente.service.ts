@@ -69,4 +69,25 @@ export class ClienteServicio {
     this.clienteDoc = this.db.doc('clientes/' + cliente.id);
     this.clienteDoc.delete();
   }
+
+  buscarCliente(nombre: string): Observable<[] | {}> {
+    let clientesColeccion: AngularFirestoreCollection<Cliente>;
+    clientesColeccion = this.db.collection('clientes', (ref) =>
+      ref
+        .orderBy('nombre', 'asc')
+        .startAt(nombre)
+        .endAt(nombre + '\uf8ff')
+    );
+
+    this.clientes = clientesColeccion.snapshotChanges().pipe(
+      map((cambios) => {
+        return cambios.map((accion) => {
+          const datos = accion.payload.doc.data() as Cliente;
+          datos.id = accion.payload.doc.id;
+          return datos;
+        });
+      })
+    );
+    return this.clientes;
+  }
 }

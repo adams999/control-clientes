@@ -18,6 +18,8 @@ export class ClientesComponent implements OnInit {
     saldo: 0,
   };
 
+  txtBuscar?: string;
+
   @ViewChild('clienteForm') clienteForm?: NgForm;
   @ViewChild('botonCerrar') botonCerrar?: ElementRef;
 
@@ -58,5 +60,32 @@ export class ClientesComponent implements OnInit {
 
   private cerrarModal(): void {
     this.botonCerrar?.nativeElement.click();
+  }
+
+  buscarCliente({ value, valid }: { value: string; valid: boolean | null }) {
+    let txtBuscar: any = value;
+    if (!valid) {
+      return;
+    } else {
+      this.clientesServicio.buscarCliente(txtBuscar['buscar']).subscribe(
+        (data: any) => {
+          if (data) {
+            this.clientes = data;
+          } else {
+            this.clientes = [];
+          }
+        },
+        (err) => {
+          console.log('Error Busqueda ', err);
+        }
+      );
+    }
+  }
+
+  borrarBusqueda() {
+    this.txtBuscar = '';
+    this.clientesServicio.getClientes().subscribe((clientes) => {
+      this.clientes = clientes;
+    });
   }
 }
